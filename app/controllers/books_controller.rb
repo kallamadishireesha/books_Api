@@ -2,8 +2,13 @@ class BooksController < ApplicationController
     before_action :set_book, only: %i[show update destroy]
   
     def index
-      books = Book.all
-      render json: books
+      @books = Book.paginate(page: params[:page], per_page: 10)
+      render json: {
+        current_page: params[:page] || 1,
+        total_pages: @books.total_pages,
+        total_entries: @books.total_entries,
+        books: @books
+      }
     end
   
     def show
